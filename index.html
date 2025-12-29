@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Caesar · Base · Morse — TesterChip</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg1:#74ebd5; --bg2:#ACB6E5;
+      --card:#fff; --muted:#666;
+      --accent:#4CAF50; --accent2:#0096FF;
+      --best-bg:#fff7e6; --best-border:#ffd89b;
+    }
+    html,body{height:100%;margin:0}
+    body{
+      font-family:Inter, 'Segoe UI', Roboto, system-ui, sans-serif;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      padding:22px;color:#222;
+    }
+    .container{max-width:1100px;margin:0 auto;background:var(--card);padding:16px;border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.12)}
+    h1{margin:0 0 6px;text-align:center}
+    p.lead{color:var(--muted);text-align:center;margin:4px 0 12px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    select,input{padding:8px;border-radius:8px;border:1px solid #ddd;font-size:14px}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .card{background:#fbfbfb;padding:12px;border-radius:8px;border:1px solid #eee}
+    label{font-weight:600;font-size:13px;display:block;margin-bottom:6px}
+    textarea{width:100%;min-height:120px;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px;box-sizing:border-box}
+    .row{display:flex;gap:8px;align-items:flex-start}
+    .row > * {flex:1}
+    .controls{display:flex;gap:8px}
+    button{background:var(--accent);color:#fff;border:none;padding:9px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    button.alt{background:var(--accent2)}
+    button.secondary{background:#f5f5f5;color:#333;border:1px solid #e6e6e6}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .slider-row{display:flex;gap:8px;align-items:center}
+    .results{max-height:480px;overflow:auto;margin-top:12px;border-radius:8px;border:1px solid #eee;padding:8px;background:#fff}
+    .variant{padding:8px;border-bottom:1px solid #f3f3f3;display:flex;gap:8px;align-items:flex-start}
+    .variant:last-child{border-bottom:none}
+    .meta{min-width:110px;font-weight:700;color:var(--muted);font-size:13px}
+    .txt{flex:1;white-space:pre-wrap}
+    .best{background:linear-gradient(90deg,var(--best-bg),#fff);border-left:4px solid var(--best-border);padding-right:6px}
+    .footer{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+    .small{font-size:13px;color:var(--muted)}
+    pre.small{margin:0;font-family:monospace;font-size:13px}
+    .site-footer{margin-top:14px;border-top:1px solid #f0f0f0;padding-top:12px;text-align:center;font-size:13px;color:var(--muted)}
+    @media (max-width:980px){.layout{grid-template-columns:1fr} .meta{min-width:80px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Caesar · Base · Morse — TesterChip</h1>
+    <p class="lead">Interactive tool: Caesar shifts, Base conversions (1–36 + All), and Morse encode/decode. Brute-force helpers, scoring, copy & download.</p>
+
+    <div class="toolbar">
+      <div>
+        <label for="mode">Mode</label>
+        <select id="mode">
+          <option value="caesar">Caesar</option>
+          <option value="base">Base</option>
+          <option value="morse">Morse</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="directionGlobal">Operation</label>
+        <select id="directionGlobal">
+          <option value="decode">Decode</option>
+          <option value="encode">Encode</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="liveToggle">Live</label>
+        <select id="liveToggle">
+          <option value="on">On</option>
+          <option value="off" selected>Off</option>
+        </select>
+      </div>
+
+      <div style="min-width:160px">
+        <label>&nbsp;</label>
+        <div class="controls">
+          <button id="copyAllResults" class="secondary" type="button">Copy All Results</button>
+          <button id="downloadAll" class="secondary" type="button">Download All</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <label for="input">Input</label>
+        <textarea id="input" placeholder="Enter or paste input here..."></textarea>
+
+        <!-- Caesar controls -->
+        <div id="caesarControls" style="margin-top:10px">
+          <div class="slider-row">
+            <div style="flex:1">
+              <label for="shiftRange">Shift</label>
+              <input id="shiftRange" type="range" min="0" max="25" value="13">
+            </div>
+            <div style="width:92px">
+              <label for="shiftNum">Shift #</label>
+              <input id="shiftNum" type="number" min="0" max="25" value="13">
+            </div>
+            <div style="width:170px">
+              <label>&nbsp;</label>
+              <div class="controls">
+                <button id="applyCaesar">Apply</button>
+                <button id="bruteCaesar" class="secondary">Brute-force</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:8px">
+            <div>
+              <label for="alphabet">Alphabet</label>
+              <select id="alphabet">
+                <option value="both" selected>Both (preserve case)</option>
+                <option value="lower">Lowercase a–z</option>
+                <option value="upper">Uppercase A–Z</option>
+                <option value="alnum">Alphanumeric</option>
+              </select>
+            </div>
+            <div>
+              <label for="preserve">Preserve</label>
+              <select id="preserve">
+                <option value="preserve" selected>Preserve non-letters</option>
+                <option value="strip">Strip non-alphabet</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Base controls -->
+        <div id="baseControls" style="margin-top:10px;display:none">
+          <div class="row">
+            <div>
+              <label for="baseOp">Base operation</label>
+              <select id="baseOp">
+                <option value="decode">Decode (numbers → text)</option>
+                <option value="encode">Encode (text → numbers)</option>
+              </select>
+            </div>
+            <div style="width:140px">
+              <label for="baseSelect">Base</label>
+              <select id="baseSelect"></select>
+            </div>
+            <div style="width:110px">
+              <label for="baseAll">All</label>
+              <select id="baseAll">
+                <option value="no" selected>Single</option>
+                <option value="yes">All (1..36)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:8px">
+            <div>
+              <label>&nbsp;</label>
+              <div class="controls">
+                <button id="applyBase">Apply</button>
+                <button id="bruteBase" class="secondary">Brute-force</button>
+              </div>
+            </div>
+            <div style="width:220px">
+              <label for="baseTokenize">Tokenize</label>
+              <select id="baseTokenize">
+                <option value="whitespace" selected>Whitespace tokens</option>
+                <option value="nonalnum">Split on non-alphanum</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="small" style="margin-top:8px">Note: Base-1 (unary) encode produces runs of '1' repeated N times (N = character code), separated by spaces. Unary decode counts '1's per token.</div>
+        </div>
+
+        <!-- Morse controls -->
+        <div id="morseControls" style="margin-top:10px;display:none">
+          <div class="row">
+            <div>
+              <label for="morseOp">Morse operation</label>
+              <select id="morseOp">
+                <option value="decode">Decode (Morse → text)</option>
+                <option value="encode">Encode (text → Morse)</option>
+              </select>
+            </div>
+            <div>
+              <label for="morseSep">Letter sep</label>
+              <select id="morseSep">
+                <option value="space">space</option>
+                <option value="pipe">|</option>
+              </select>
+            </div>
+            <div style="width:200px">
+              <label>&nbsp;</label>
+              <div class="controls">
+                <button id="applyMorse">Apply</button>
+                <button id="bruteMorse" class="secondary">Try variants</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="small" style="margin-top:8px">Morse decode accepts '.' and '-' (or '·'/'−'), letters separated by spaces, words separated by '/' or three spaces.</div>
+        </div>
+
+        <div class="footer" style="margin-top:12px">
+          <div class="small">Tip: choose a mode, set options, click Apply or Brute-force to see candidates. The tool highlights likely plaintext using a small English-word heuristic.</div>
+          <div style="display:flex;gap:8px">
+            <button id="copyOutput" class="secondary">Copy Output</button>
+            <button id="downloadOutput" class="secondary">Download Output</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label for="output">Output</label>
+        <textarea id="output" readonly></textarea>
+
+        <div id="results" class="results" aria-live="polite" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="site-footer" role="contentinfo">
+      <div>© 2025 TesterChip. All rights reserved.</div>
+      <div style="margin-top:6px">This is a sample project created to practice and combine features commonly found on popular websites (interactive controls, brute-force helpers, scoring, copy/download). It was built as a learning project and improved with AI-assisted suggestions during development.</div>
+      <div style="margin-top:6px" class="small">Not intended for production use. If you reuse or adapt this project, please include appropriate attribution.</div>
+    </div>
+  </div>
+
+  <script>
+    // --- Elements & init ---
+    const modeEl = document.getElementById('mode');
+    const directionGlobal = document.getElementById('directionGlobal');
+    const liveToggle = document.getElementById('liveToggle');
+    const inputEl = document.getElementById('input');
+    const outputEl = document.getElementById('output');
+    const resultsDiv = document.getElementById('results');
+
+    // Caesar
+    const caesarControls = document.getElementById('caesarControls');
+    const shiftRange = document.getElementById('shiftRange');
+    const shiftNum = document.getElementById('shiftNum');
+    const applyCaesar = document.getElementById('applyCaesar');
+    const bruteCaesar = document.getElementById('bruteCaesar');
+    const alphabetSel = document.getElementById('alphabet');
+    const preserveSel = document.getElementById('preserve');
+
+    // Base
+    const baseControls = document.getElementById('baseControls');
+    const baseSelect = document.getElementById('baseSelect');
+    const baseOp = document.getElementById('baseOp');
+    const baseAll = document.getElementById('baseAll');
+    const baseTokenize = document.getElementById('baseTokenize');
+    const applyBase = document.getElementById('applyBase');
+    const bruteBase = document.getElementById('bruteBase');
+
+    // Morse
+    const morseControls = document.getElementById('morseControls');
+    const morseOp = document.getElementById('morseOp');
+    const morseSep = document.getElementById('morseSep');
+    const applyMorse = document.getElementById('applyMorse');
+    const bruteMorse = document.getElementById('bruteMorse');
+
+    // Populate bases 1..36
+    for (let b = 1; b <= 36; b++) {
+      const o = document.createElement('option'); o.value = String(b); o.textContent = String(b);
+      baseSelect.appendChild(o);
+    }
+
+    // Simple English scoring
+    const COMMON_WORDS = ["the","be","to","of","and","a","in","that","have","i","is","it","for","not","on","with","as","you","do","at"];
+    function scoreCandidate(text) {
+      const normalized = (text || '').toLowerCase().replace(/[^a-z\s]/g, ' ');
+      let score = 0;
+      for (const w of COMMON_WORDS) {
+        const re = new RegExp('\\b' + w + '\\b', 'g');
+        const m = normalized.match(re);
+        if (m) score += m.length;
+      }
+      const letters = (text.match(/[A-Za-z]/g) || []).length;
+      const spaces = (text.match(/\s/g) || []).length;
+      if (letters > 0) score += Math.min(3, Math.floor(spaces / Math.max(1, letters / 5)));
+      return score;
+    }
+
+    // --- Caesar implementation ---
+    function caesarShiftChar(c, shift, encode=false, alphabetMode='both', preserve='preserve') {
+      // strip option
+      if (preserve === 'strip' && !(/[A-Za-z0-9]/.test(c))) return '';
+      if (alphabetMode === 'alnum') {
+        if (/[0-9]/.test(c)) {
+          const base = 48; const n = 10;
+          return String.fromCharCode((c.charCodeAt(0) - base + (encode ? shift : -shift) + n) % n + base);
+        }
+        // fallthrough to letter handling
+      }
+      if (/[a-z]/.test(c)) {
+        const base = 97, n = 26;
+        return String.fromCharCode((c.charCodeAt(0) - base + (encode ? shift : -shift) + n) % n + base);
+      }
+      if (/[A-Z]/.test(c)) {
+        const base = 65, n = 26;
+        return String.fromCharCode((c.charCodeAt(0) - base + (encode ? shift : -shift) + n) % n + base);
+      }
+      // keep other chars
+      return preserve === 'strip' ? '' : c;
+    }
+
+    function applyCaesarNow() {
+      const text = inputEl.value || '';
+      const shift = Number(shiftNum.value) || 0;
+      const encode = directionGlobal.value === 'encode';
+      const alphabetMode = alphabetSel.value;
+      const preserve = preserveSel.value;
+      const out = Array.from(text).map(ch => caesarShiftChar(ch, shift, encode, alphabetMode, preserve)).join('');
+      outputEl.value = out;
+      resultsDiv.innerHTML = '';
+    }
+
+    function bruteCaesarNow() {
+      const text = inputEl.value || '';
+      if (!text) { resultsDiv.innerHTML = '<div class="small">Enter input to brute-force.</div>'; return; }
+      const arr = [];
+      for (let s = 0; s < 26; s++) {
+        const out = Array.from(text).map(ch => caesarShiftChar(ch, s, directionGlobal.value === 'encode', alphabetSel.value, preserveSel.value)).join('');
+        const score = scoreCandidate(out);
+        arr.push({shift: s, out, score});
+      }
+      arr.sort((a,b)=>a.shift - b.shift); // preserve order 0..25
+      const best = [...arr].sort((a,b)=>b.score - a.score || a.shift - b.shift)[0];
+      renderVariants(arr.map(a=>({label:`Shift ${a.shift}` , text:a.out, score:a.score})), best ? best.out : null);
+      outputEl.value = best ? best.out : arr[0].out;
+    }
+
+    // --- Base implementation ---
+    function encodeToBase(text, base) {
+      // For base 1 (unary): output runs of '1' repeated codepoint times (space separated)
+      const codes = Array.from(text).map(ch => ch.charCodeAt(0));
+      if (base === 1) {
+        return codes.map(n => '1'.repeat(Math.max(0, n))).join(' ');
+      }
+      return codes.map(n => n.toString(base)).join(' ');
+    }
+
+    function decodeFromBaseSingle(text, base, tokenize='whitespace') {
+      // Tokenize input
+      let tokens;
+      if (tokenize === 'whitespace') tokens = text.trim().split(/\s+/).filter(Boolean);
+      else tokens = text.split(/[^0-9A-Za-z]+/).filter(Boolean);
+      if (base === 1) {
+        // tokens are runs of '1' or numbers; interpret length of '1' sequences or numeric tokens as counts
+        const vals = tokens.map(t => {
+          if (/^1+$/.test(t)) return t.length;
+          const parsed = parseInt(t, 10);
+          return isNaN(parsed) ? NaN : parsed;
+        });
+        return vals.map(v => isNaN(v) ? '?' : String.fromCharCode(v)).join('');
+      }
+      const vals = tokens.map(t => parseInt(t, base));
+      return vals.map(v => isNaN(v) ? '?' : String.fromCharCode(v)).join('');
+    }
+
+    function applyBaseNow() {
+      const text = inputEl.value || '';
+      const base = Number(baseSelect.value) || 10;
+      const op = baseOp.value;
+      const tokenize = baseTokenize.value;
+      if (op === 'encode') {
+        outputEl.value = encodeToBase(text, base);
+        resultsDiv.innerHTML = '';
+        return;
+      }
+      // decode
+      if (baseAll.value === 'yes') {
+        bruteBaseNow();
+        return;
+      }
+      outputEl.value = decodeFromBaseSingle(text, base, tokenize);
+      resultsDiv.innerHTML = '';
+    }
+
+    function bruteBaseNow() {
+      const text = inputEl.value || '';
+      if (!text) { resultsDiv.innerHTML = '<div class="small">Enter input to brute-force.</div>'; return; }
+      const arr = [];
+      for (let b = 1; b <= 36; b++) {
+        const out = decodeFromBaseSingle(text, b, baseTokenize.value);
+        const score = scoreCandidate(out);
+        arr.push({base: b, out, score});
+      }
+      // pick best by score
+      const best = [...arr].sort((a,b)=>b.score - a.score || a.base - b.base)[0];
+      // render in order 1..36
+      renderVariants(arr.map(a=>({label:`Base ${a.base}`, text: a.out, score: a.score})), best ? best.out : null);
+      if (best) outputEl.value = best.out;
+    }
+
+    // --- Morse implementation ---
+    const MORSE = {
+      'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..',
+      'M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..',
+      '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.',
+      '.':'.-.-.-',',':'--..--','?':'..--..','!':'-.-.--','/':'-..-.','(':'-.--.',')':'-.--.-','&':'.-... ',':':'---...',';':'-.-.-.','=':'-...-','+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'
+    };
+    const MORSE_REVERSE = (() => {
+      const r = {};
+      for (const k in MORSE) r[MORSE[k].replace(/\s+/g,'')] = k;
+      return r;
+    })();
+
+    function encodeMorse(text, sep=' ') {
+      return text.toUpperCase().split(/\s+/).map(word => {
+        return Array.from(word).map(ch => MORSE[ch] || '?').join(sep);
+      }).join(' / ');
+    }
+
+    function decodeMorse(morseText) {
+      if (!morseText) return '';
+      // normalize symbols (allow · −)
+      const normalized = morseText.replace(/·/g, '.').replace(/−/g, '-').trim();
+      // words separated by ' / ' or by three spaces
+      const words = normalized.split(/\s{3,}|\/+/).map(w => w.trim()).filter(Boolean);
+      const outWords = words.map(w => {
+        // letters separated by single space or pipe
+        const letters = w.split(/\s+|\|/).filter(Boolean);
+        return letters.map(l => MORSE_REVERSE[l] || '?').join('');
+      });
+      return outWords.join(' ');
+    }
+
+    function applyMorseNow() {
+      const text = inputEl.value || '';
+      if (morseOp.value === 'encode') {
+        const sep = morseSep.value === 'pipe' ? '|' : ' ';
+        outputEl.value = encodeMorse(text, sep);
+        resultsDiv.innerHTML = '';
+      } else {
+        outputEl.value = decodeMorse(text);
+        resultsDiv.innerHTML = '';
+      }
+    }
+
+    function bruteMorseNow() {
+      // For Morse, "variants" could be separators or maybe common punctuation: keep simple — try treating '/' and triple space.
+      const text = inputEl.value || '';
+      const candidates = [];
+      // Try decode with direct decodeMorse
+      const d1 = decodeMorse(text);
+      candidates.push({label: 'Morse decode', text: d1, score: scoreCandidate(d1)});
+      // Try replacing pipes with spaces then decode
+      const d2 = decodeMorse(text.replace(/\|/g, ' '));
+      candidates.push({label: 'Morse (pipes->spaces)', text: d2, score: scoreCandidate(d2)});
+      // Try treating single spaces as separators more aggressively
+      const d3 = decodeMorse(text.replace(/\s+/g, '   '));
+      candidates.push({label: 'Morse (force word gaps)', text: d3, score: scoreCandidate(d3)});
+      const best = [...candidates].sort((a,b)=>b.score - a.score)[0];
+      renderVariants(candidates.map(c=>({label:c.label, text:c.text, score:c.score})), best ? best.text : null);
+      if (best) outputEl.value = best.text;
+    }
+
+    // --- Rendering helpers ---
+    function renderVariants(items, bestText=null) {
+      resultsDiv.innerHTML = '';
+      for (const it of items) {
+        const div = document.createElement('div');
+        div.className = 'variant' + (bestText !== null && it.text === bestText ? ' best' : '');
+        const meta = document.createElement('div'); meta.className = 'meta';
+        meta.textContent = it.label + (it.score ? (' • ' + it.score) : '');
+        const txt = document.createElement('div'); txt.className = 'txt'; txt.textContent = it.text;
+        const act = document.createElement('div'); act.style.display = 'flex'; act.style.gap = '6px';
+        const copyBtn = document.createElement('button'); copyBtn.type = 'button'; copyBtn.className = 'secondary'; copyBtn.textContent = 'Copy';
+        copyBtn.addEventListener('click', ()=> {
+          navigator.clipboard.writeText(it.text || '').then(()=> {
+            const prev = copyBtn.textContent; copyBtn.textContent = 'Copied!';
+            setTimeout(()=>copyBtn.textContent = prev, 900);
+          }).catch(()=> alert('Copy failed'));
+        });
+        act.appendChild(copyBtn);
+        div.appendChild(meta); div.appendChild(txt); div.appendChild(act);
+        resultsDiv.appendChild(div);
+      }
+      // scroll best into view
+      const bestEl = resultsDiv.querySelector('.best'); if (bestEl) bestEl.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    // --- Copy / Download helpers ---
+    document.getElementById('copyOutput').addEventListener('click', ()=> {
+      navigator.clipboard.writeText(outputEl.value || '').then(()=> {
+        const b = document.getElementById('copyOutput'); b.textContent = 'Copied!'; setTimeout(()=> b.textContent = 'Copy Output', 900);
+      }).catch(()=> alert('Copy failed'));
+    });
+    document.getElementById('downloadOutput').addEventListener('click', ()=> {
+      const blob = new Blob([outputEl.value || ''], {type:'text/plain;charset=utf-8'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'output.txt'; document.body.appendChild(a); a.click(); a.remove();
+    });
+
+    document.getElementById('copyAllResults').addEventListener('click', ()=> {
+      const nodes = Array.from(resultsDiv.querySelectorAll('.variant'));
+      if (!nodes.length) return alert('No results to copy');
+      let out = nodes.map(n => {
+        const meta = n.querySelector('.meta').textContent;
+        const txt = n.querySelector('.txt').textContent;
+        return meta + ': ' + txt;
+      }).join('\n\n');
+      navigator.clipboard.writeText(out).then(()=> {
+        const b = document.getElementById('copyAllResults'); const prev = b.textContent; b.textContent = 'Copied!'; setTimeout(()=> b.textContent = prev, 900);
+      }).catch(()=> alert('Copy failed'));
+    });
+
+    document.getElementById('downloadAll').addEventListener('click', ()=> {
+      const nodes = Array.from(resultsDiv.querySelectorAll('.variant'));
+      if (!nodes.length) return alert('No results to download');
+      let out = nodes.map(n => {
+        const meta = n.querySelector('.meta').textContent;
+        const txt = n.querySelector('.txt').textContent;
+        return meta + ': ' + txt;
+      }).join('\n\n');
+      const blob = new Blob([out], {type:'text/plain;charset=utf-8'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'variants.txt'; document.body.appendChild(a); a.click(); a.remove();
+    });
+
+    // --- Event wiring ---
+    function showControls() {
+      const m = modeEl.value;
+      caesarControls.style.display = m === 'caesar' ? '' : 'none';
+      baseControls.style.display = m === 'base' ? '' : 'none';
+      morseControls.style.display = m === 'morse' ? '' : 'none';
+    }
+    modeEl.addEventListener('change', showControls);
+
+    // Caesar sync
+    shiftRange.addEventListener('input', ()=> { shiftNum.value = shiftRange.value; if (liveToggle.value === 'on') applyCaesarNow(); });
+    shiftNum.addEventListener('input', ()=> { let v = Number(shiftNum.value); if (isNaN(v)) v = 0; v = Math.max(0, Math.min(25, Math.floor(v))); shiftNum.value = v; shiftRange.value = v; if (liveToggle.value === 'on') applyCaesarNow(); });
+
+    // Live apply
+    inputEl.addEventListener('input', ()=> {
+      if (liveToggle.value === 'on') {
+        if (modeEl.value === 'caesar') applyCaesarNow();
+        else if (modeEl.value === 'base') applyBaseNow();
+        else if (modeEl.value === 'morse') applyMorseNow();
+      }
+    });
+    directionGlobal.addEventListener('change', ()=> { /* direction used by functions */ });
+
+    // Apply / brute handlers
+    applyCaesar.addEventListener('click', applyCaesarNow);
+    bruteCaesar.addEventListener('click', bruteCaesarNow);
+    applyBase.addEventListener('click', applyBaseNow);
+    bruteBase.addEventListener('click', bruteBaseNow);
+    applyMorse.addEventListener('click', applyMorseNow);
+    bruteMorse.addEventListener('click', bruteMorseNow);
+
+    // Base select default
+    baseSelect.value = '10';
+
+    // Initialize UI and a small demo (commented)
+    showControls();
+    // inputEl.value = "Gur dhvpx oebja sbk whzcf bire gur ynml qbt.";
+    // bruteCaesarNow();
+
+  </script>
+</body>
+</html>
