@@ -1,38 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Caesar Base Morse Tester Chip</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptography Tools</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .hero { display: flex; justify-content: center; align-items: center; height: 100px; background: #f8f9fa; }
+        .tool { display: none; }
+        .active { display: block; }
+    </style>
 </head>
 <body>
-    <header>
+    <div class="hero">
         <h1>TesterChip</h1>
-    </header>
-    <main>
-        <section id="home">
-            <h2>Welcome to the TesterChip application!</h2>
-            <p>Select a tool from the options below to get started.</p>
-        </section>
-        <section id="tools">
-            <h2>Tools</h2>
-            <button onclick="showTool('tool1')">Tool 1</button>
-            <button onclick="showTool('tool2')">Tool 2</button>
-            <button onclick="showTool('tool3')">Tool 3</button>
-        </section>
-        <section id="tool-details" style="display:none;">
-            <h2>Tool Details</h2>
-            <div id="tool1" style="display:none;">Details for Tool 1</div>
-            <div id="tool2" style="display:none;">Details for Tool 2</div>
-            <div id="tool3" style="display:none;">Details for Tool 3</div>
-        </section>
-    </main>
+    </div>
+    <div class="tools">
+        <div class="tool active" id="crypto-tools">
+            <h2>Cryptography Tools</h2>
+            <p>Tool 1: Caesar Cipher</p>
+            <p>Tool 2: Morse Code Encoder</p>
+            <!-- Add more tools as needed -->
+        </div>
+        <!-- Additional tools can be added here -->
+    </div>
     <script>
-        function showTool(tool) {
-            document.getElementById('tool-details').style.display = 'block';
-            document.getElementById('home').style.display = 'block';  // Keep the hero title visible
-            document.querySelectorAll('#tool-details > div').forEach(div => {
-                div.style.display = 'none';
+        // JavaScript to switch tools and keep the hero title visible
+        const tools = document.querySelectorAll('.tool');
+        const hero = document.querySelector('.hero');
+
+        function switchTool(toolId) {
+            tools.forEach(tool => {
+                tool.classList.remove('active');
             });
-            document.getElementById(tool).style.display = 'block';
+            document.getElementById(toolId).classList.add('active');
         }
     </script>
 </body>
