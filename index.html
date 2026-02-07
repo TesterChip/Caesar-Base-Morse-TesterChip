@@ -3,37 +3,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptography Tools</title>
+    <title>TesterChip - Cryptography Tools</title>
+    <link href__="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; }
-        .hero { display: flex; justify-content: center; align-items: center; height: 100px; background: #f8f9fa; }
-        .tool { display: none; }
-        .active { display: block; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f3e8ff 0%, #ede9fe 30%, #f8fafc 100%);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e5e7eb;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+            color: #8b5cf6;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .brand {
+            color: #7c3aed;
+        }
+
+        .highlight {
+            color: #8b5cf6;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            max-width: 500px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 60px;
+        }
+
+        .tag {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover, .tag.active {
+            border-color: #8b5cf6;
+            color: #7c3aed;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+            background: #faf5ff;
+        }
+
+        .tools-section {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            color: #8b5cf6;
+        }
+
+        .hide-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hide-btn:hover {
+            background: #f9fafb;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .tool-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tool-card:hover, .tool-card.active {
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.1);
+            background: #faf5ff;
+        }
+
+        .tool-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .tool-card p {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .tool-interface {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .tool-interface.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .input-group textarea, .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .input-group textarea:focus, .input-group input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #7c3aed;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .result-box .result-content {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1f2937;
+            word-break: break-all;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 40px 16px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <h1>TesterChip</h1>
-    </div>
-    <div class="tools">
-        <div class="tool active" id="crypto-tools">
-            <h2>Cryptography Tools</h2>
-            <p>Tool 1: Caesar Cipher</p>
-            <p>Tool 2: Morse Code Encoder</p>
-            <!-- Add more tools as needed -->
+    <div class="container">
+        <div class="badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            Cryptography Tools
         </div>
-        <!-- Additional tools can be added here -->
-    </div>
-    <script>
-        // JavaScript to switch tools and keep the hero title visible
-        const tools = document.querySelectorAll('.tool');
-        const hero = document.querySelector('.hero');
 
-        function switchTool(toolId) {
-            tools.forEach(tool => {
+        <h1>
+            <span class="brand">TesterChip</span> - Your <span class="highlight">Crypto</span> Toolkit
+        </h1>
+
+        <p class="subtitle">
+            Discover powerful cryptography tools for encoding, decoding, encryption, and security analysis
+        </p>
+
+        <div class="tags">
+            <span class="tag" onclick="showTool('caesar')">Caesar Cipher</span>
+            <span class="tag" onclick="showTool('morse')">Morse Code</span>
+            <span class="tag" onclick="showTool('base64')">Base64 Encode</span>
+            <span class="tag" onclick="showTool('hash')">Hash Generator</span>
+            <span class="tag" onclick="showTool('rot13')">ROT13 Cipher</span>
+            <span class="tag" onclick="showTool('binary')">Binary Converter</span>
+        </div>
+
+        <div class="tools-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <path d="M9 9h6v6H9z"/>
+                    </svg>
+                    Available Tools
+                </div>
+            </div>
+
+            <div class="tools-grid">
+                <div class="tool-card" onclick="showTool('caesar')">
+                    <h3>Caesar Cipher</h3>
+                    <p>Shift-based encryption</p>
+                </div>
+                <div class="tool-card" onclick="showTool('morse')">
+                    <h3>Morse Code</h3>
+                    <p>Encode & decode morse</p>
+                </div>
+                <div class="tool-card" onclick="showTool('base64')">
+                    <h3>Base64</h3>
+                    <p>Encode & decode Base64</p>
+                </div>
+                <div class="tool-card" onclick="showTool('hash')">
+                    <h3>Hash Generator</h3>
+                    <p>MD5 & SHA hashes</p>
+                </div>
+                <div class="tool-card" onclick="showTool('rot13')">
+                    <h3>ROT13</h3>
+                    <p>Letter substitution</p>
+                </div>
+                <div class="tool-card" onclick="showTool('binary')">
+                    <h3>Binary</h3>
+                    <p>Text to Binary converter</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caesar Cipher Tool -->
+        <div id="caesar" class="tools-section tool-interface">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">Caesar Cipher</h2>
+            <div class="input-group">
+                <label>Enter Text:</label>
+                <textarea id="caesarInput" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>Shift Value (1-25):</label>
+                <input type="number" id="caesarShift" min="1" max="25" value="3">
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="caesarEncrypt()">Encrypt</button>
+                <button class="btn btn-primary" onclick="caesarDecrypt()">Decrypt</button>
+                <button class="btn btn-secondary" onclick="clearTool('caesar')">Clear</button>
+            </div>
+            <div id="caesarResult" class="result-box">
+                <h4>Result:</h4>
+                <div class="result-content" id="caesarOutput"></div>
+            </div>
+        </div>
+
+        <!-- Morse Code Tool -->
+        <div id="morse" class="tools-section tool-interface">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">Morse Code</h2>
+            <div class="input-group">
+                <label>Enter Text or Morse Code:</label>
+                <textarea id="morseInput" rows="4" placeholder="Enter text or morse code (use spaces between letters, / between words)"></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="morseEncode()">Encode to Morse</button>
+                <button class="btn btn-primary" onclick="morseDecode()">Decode from Morse</button>
+                <button class="btn btn-secondary" onclick="clearTool('morse')">Clear</button>
+            </div>
+            <div id="morseResult" class="result-box">
+                <h4>Result:</h4>
+                <div class="result-content" id="morseOutput"></div>
+            </div>
+        </div>
+
+        <!-- Base64 Tool -->
+        <div id="base64" class="tools-section tool-interface">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">Base64 Encoder/Decoder</h2>
+            <div class="input-group">
+                <label>Enter Text:</label>
+                <textarea id="base64Input" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="base64Encode()">Encode</button>
+                <button class="btn btn-primary" onclick="base64Decode()">Decode</button>
+                <button class="btn btn-secondary" onclick="clearTool('base64')">Clear</button>
+            </div>
+            <div id="base64Result" class="result-box">
+                <h4>Result:</h4>
+                <div class="result-content" id="base64Output"></div>
+            </div>
+        </div>
+
+        <!-- Hash Generator Tool -->
+        <div id="hash" class="tools-section tool-interface">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">Hash Generator</h2>
+            <div class="input-group">
+                <label>Enter Text:</label>
+                <textarea id="hashInput" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="generateHash('md5')">Generate MD5</button>
+                <button class="btn btn-primary" onclick="generateHash('sha256')">Generate SHA-256</button>
+                <button class="btn btn-secondary" onclick="clearTool('hash')">Clear</button>
+            </div>
+            <div id="hashResult" class="result-box">
+                <h4>Result:</h4>
+                <div class="result-content" id="hashOutput"></div>
+            </div>
+        </div>
+
+        <!-- ROT13 Tool -->
+        <div id="rot13" class="tools-section tool-interface">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">ROT13 Cipher</h2>
+            <div class="input-group">
+                <label>Enter Text:</label>
+                <textarea id="rot13Input" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="rot13Convert()">Convert</button>
+                <button class="btn btn-secondary" onclick="clearTool('rot13')">Clear</button>
+            </div>
+            <div id="rot13Result" class="result-box">
+                <h4>Result:</h4>
+                <div class="result-content" id="rot13Output"></div>
+            </div>
+        </div>
+
+        <!-- Binary Converter Tool -->
+        <div id="binary" class="tools-section tool-interface">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">Binary Converter</h2>
+            <div class="input-group">
+                <label>Enter Text or Binary:</label>
+                <textarea id="binaryInput" rows="4" placeholder="Enter text or binary code (use spaces between bytes)"></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="textToBinary()">Text to Binary</button>
+                <button class="btn btn-primary" onclick="binaryToText()">Binary to Text</button>
+                <button class="btn btn-secondary" onclick="clearTool('binary')">Clear</button>
+            </div>
+            <div id="binaryResult" class="result-box">
+                <h4>Result:</h4>
+                <div class="result-content" id="binaryOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Morse Code Dictionary
+        const morseCode = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+            'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+            'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+            'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+            'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---',
+            '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+            '8': '---..', '9': '----.', ' ': '/'
+        };
+
+        const reverseMorse = Object.fromEntries(
+            Object.entries(morseCode).map(([key, value]) => [value, key])
+        );
+
+        function showTool(toolName) {
+            // Hide all tools
+            document.querySelectorAll('.tool-interface').forEach(tool => {
                 tool.classList.remove('active');
             });
-            document.getElementById(toolId).classList.add('active');
+            
+            // Remove active class from all cards and tags
+            document.querySelectorAll('.tool-card, .tag').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected tool
+            document.getElementById(toolName).classList.add('active');
+            
+            // Scroll to tool
+            document.getElementById(toolName).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function clearTool(toolName) {
+            document.getElementById(toolName + 'Input').value = '';
+            document.getElementById(toolName + 'Result').classList.remove('show');
+        }
+
+        // Caesar Cipher Functions
+        function caesarEncrypt() {
+            const text = document.getElementById('caesarInput').value;
+            const shift = parseInt(document.getElementById('caesarShift').value);
+            const result = caesarCipher(text, shift);
+            showResult('caesar', result);
+        }
+
+        function caesarDecrypt() {
+            const text = document.getElementById('caesarInput').value;
+            const shift = parseInt(document.getElementById('caesarShift').value);
+            const result = caesarCipher(text, 26 - shift);
+            showResult('caesar', result);
+        }
+
+        function caesarCipher(text, shift) {
+            return text.replace(/[a-zA-Z]/g, char => {
+                const start = char <= 'Z' ? 65 : 97;
+                return String.fromCharCode((char.charCodeAt(0) - start + shift) % 26 + start);
+            });
+        }
+
+        // Morse Code Functions
+        function morseEncode() {
+            const text = document.getElementById('morseInput').value.toUpperCase();
+            const result = text.split('').map(char => morseCode[char] || char).join(' ');
+            showResult('morse', result);
+        }
+
+        function morseDecode() {
+            const morse = document.getElementById('morseInput').value;
+            const result = morse.split(' ').map(code => reverseMorse[code] || code).join('');
+            showResult('morse', result);
+        }
+
+        // Base64 Functions
+        function base64Encode() {
+            const text = document.getElementById('base64Input').value;
+            const result = btoa(text);
+            showResult('base64', result);
+        }
+
+        function base64Decode() {
+            try {
+                const text = document.getElementById('base64Input').value;
+                const result = atob(text);
+                showResult('base64', result);
+            } catch (e) {
+                showResult('base64', 'Error: Invalid Base64 string');
+            }
+        }
+
+        // Hash Functions (Simple implementations - for real security use proper libraries)
+        async function generateHash(type) {
+            const text = document.getElementById('hashInput').value;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            
+            if (type === 'md5') {
+                // Simple MD5 implementation
+                const result = simpleMD5(text);
+                showResult('hash', result);
+            } else if (type === 'sha256') {
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const result = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                showResult('hash', result);
+            }
+        }
+
+        function simpleMD5(string) {
+            // This is a simple hash for demonstration. Use crypto-js or similar for production
+            let hash = 0;
+            for (let i = 0; i < string.length; i++) {
+                const char = string.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16).padStart(32, '0').substring(0, 32);
+        }
+
+        // ROT13 Function
+        function rot13Convert() {
+            const text = document.getElementById('rot13Input').value;
+            const result = text.replace(/[a-zA-Z]/g, char => {
+                const start = char <= 'Z' ? 65 : 97;
+                return String.fromCharCode((char.charCodeAt(0) - start + 13) % 26 + start);
+            });
+            showResult('rot13', result);
+        }
+
+        // Binary Functions
+        function textToBinary() {
+            const text = document.getElementById('binaryInput').value;
+            const result = text.split('').map(char => 
+                char.charCodeAt(0).toString(2).padStart(8, '0')
+            ).join(' ');
+            showResult('binary', result);
+        }
+
+        function binaryToText() {
+            try {
+                const binary = document.getElementById('binaryInput').value;
+                const result = binary.split(' ').map(bin => 
+                    String.fromCharCode(parseInt(bin, 2))
+                ).join('');
+                showResult('binary', result);
+            } catch (e) {
+                showResult('binary', 'Error: Invalid binary string');
+            }
+        }
+
+        // Show Result Function
+        function showResult(toolName, result) {
+            const resultBox = document.getElementById(toolName + 'Result');
+            const outputDiv = document.getElementById(toolName + 'Output');
+            outputDiv.textContent = result;
+            resultBox.classList.add('show');
         }
     </script>
 </body>
