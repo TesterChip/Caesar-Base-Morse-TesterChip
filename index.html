@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TesterChip - Cryptography Tools</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href__="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -286,9 +287,44 @@
                 padding: 40px 16px;
             }
         }
+        /* Top logo (compact) */
+        .top-logo {
+            text-align: center;
+            margin: 50px 0 12px;
+        }
+
+        .top-logo img {
+            width: 80px;
+            height: 80px;
+            display: inline-block;
+        }
+
+        /* Logo box (Font Awesome shield) */
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            background-color: #7C3AED;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.35);
+            transform: rotate(-5deg);
+        }
+
+        .logo-box .fa-solid {
+            color: #ffffff;
+            font-size: 40px;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
+    <div class="top-logo">
+        <div class="logo-box">
+            <i class="fa-solid fa-shield-halved text-4xl text-white"></i>
+        </div>
+    </div>
     <div class="container">
         <div class="badge">
             <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
